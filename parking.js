@@ -3,7 +3,7 @@ class ParkingArea {
     this.name = name;
     this.location = location;
     this.sizeOfParkingArea = parseFloat(sizeOfParkingArea);
-    this.cash = cash;
+    this.cash = parseFloat(cash);
   }
 
   greeting() {
@@ -41,7 +41,7 @@ class Vehicle {
 
   setParkingTime(time) {
     this.parkingTime += time;
-    return `${this.name} has parked for ${time} hours`;
+    return `${this.name} has parked for ${time} hours.`;
   }
 
   parkOut(parkingArea, ticketMachine) {
@@ -97,16 +97,16 @@ class TicketingMachine {
         this.number++;
         if (vehicle.type === "car") {
           vehicle.ticketPrice = 5000;
-          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is ${vehicle.ticketPrice}`;
+          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is ${vehicle.ticketPrice}/hour.`;
         } else if (vehicle.type === "motor") {
           vehicle.ticketPrice = 2000;
-          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is ${vehicle.ticketPrice}`;
+          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is ${vehicle.ticketPrice}/hour.`;
         } else {
           vehicle.ticketPrice = 10000;
-          return `${vehicle.name} enter ${parkingArea.nameq33}. Ticket number is ${vehicle.ticketNumber} and ticket price is ${vehicle.ticketPrice}`;
+          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is ${vehicle.ticketPrice}/hour.`;
         }
       } else {
-        return `Sorry, no more available space for ${parkingArea.name} Parking Area. Please find another parking area. ${vehicle}`;
+        return `Sorry, no more available space for ${parkingArea.name} Parking Area. Please find another parking area.`;
       }
     } else {
       return `Sorry, we are closed. No more ticket for today.`;
@@ -126,7 +126,7 @@ class TicketingMachine {
 }
 
 // Test
-let Hartono = new ParkingArea("Hartono", "RR Utara", 2000);
+let Hartono = new ParkingArea("Hartono Mall", "Sleman", 2000);
 let Tm1 = new TicketingMachine("Tm1");
 let Tm2 = new TicketingMachine("Tm2");
 let Tm3 = new TicketingMachine("Tm3");
