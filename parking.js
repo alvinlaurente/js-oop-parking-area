@@ -17,17 +17,15 @@ class Vehicle {
     type,
     size,
     ticketNumber,
-    ticketPrice,
-    parkStatus = false,
-    parkingTime = 0
+    ticketPrice
   ) {
     this.name = name;
     this.type = type;
     this.size = parseFloat(size);
     this.ticketNumber = ticketNumber;
     this.ticketPrice = parseFloat(ticketPrice);
-    this.parkStatus = parkStatus;
-    this.parkingTime = parseFloat(parkingTime);
+    this.parkStatus = false;
+    this.parkingTime = parseFloat(0);
   }
 
   // Vehicle wants to enter parking area
@@ -44,6 +42,7 @@ class Vehicle {
   // Set how long vehicle is parked (in hours)
   setParkingTime(time) {
     this.parkingTime += time;
+
     return `${this.name} has parked for ${time} hours.`;
   }
 
@@ -60,37 +59,44 @@ class Vehicle {
 class Car extends Vehicle {
   constructor(
     name,
-    type = "car",
-    size = "15",
     ticketNumber,
     ticketPrice,
     parkStatus,
     parkingTime
   ) {
-    super(name, type, size, ticketNumber, ticketPrice, parkStatus, parkingTime);
+    super(name, "car", "15", ticketNumber, ticketPrice, parkStatus, parkingTime);
   }
 }
 
 class Motor extends Vehicle {
   constructor(
     name,
-    type = "motor",
-    size = "2.5",
     ticketNumber,
     ticketPrice,
     parkStatus,
     parkingTime
   ) {
-    super(name, type, size, ticketNumber, ticketPrice, parkStatus, parkingTime);
+    super(name, "motor", "2.5", ticketNumber, ticketPrice, parkStatus, parkingTime);
   }
 }
 
 class TicketingMachine {
-  constructor(name, number = 1, price = 2000, ticketAvailable = 200) {
+  constructor(name, ticketAvailable = 200) {
     this.name = name;
-    this.number = parseFloat(number);
-    this.price = parseFloat(price);
+    this.number = parseFloat(1);
+    this.price = parseFloat(10000);
     this.ticketAvailable = parseFloat(ticketAvailable);
+  }
+
+  // Get ticket price
+  getTicketPrice(vehicle) {
+    if (vehicle.type === "car") {
+      return vehicle.ticketPrice = 5000;
+    }
+
+    if (vehicle.type === "motor") {
+      return vehicle.ticketPrice = 2000;
+    }
   }
 
   // Print ticket for incoming vehicle
@@ -101,22 +107,22 @@ class TicketingMachine {
         this.ticketAvailable--;
         vehicle.ticketNumber = `${this.name}-${this.number}`;
         this.number++;
-        if (vehicle.type === "car") {
-          vehicle.ticketPrice = 5000;
-          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is Rp${vehicle.ticketPrice}/hour.`;
-        } else if (vehicle.type === "motor") {
-          vehicle.ticketPrice = 2000;
-          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is Rp${vehicle.ticketPrice}/hour.`;
-        } else {
-          vehicle.ticketPrice = 10000;
-          return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is Rp${vehicle.ticketPrice}/hour.`;
-        }
-      } else {
-        return `Sorry, no more available space for ${parkingArea.name} Parking Area. Please find another parking area.`;
+        this.getTicketPrice(vehicle);
+
+        return `${vehicle.name} enter ${parkingArea.name}. Ticket number is ${vehicle.ticketNumber} and ticket price is Rp${vehicle.ticketPrice}/hour.`;
       }
-    } else {
-      return `Sorry, we are closed. No more ticket for today.`;
+
+      return `Sorry, no more available space for ${parkingArea.name} Parking Area. Please find another parking area.`;
     }
+
+    return `Sorry, we are closed. No more ticket for today.`;
+  }
+
+  // Reset ticketPrice, ticketNumber, parkingTime of vehicle after pay
+  resetVehicleStatus(vehicle) {
+    vehicle.ticketPrice = 0;
+    vehicle.ticketNumber = null;
+    vehicle.parkingTime = 0;
   }
 
   // Serve payment for every vehicle that wants to leave parking area
@@ -124,9 +130,7 @@ class TicketingMachine {
     let bill = vehicle.ticketPrice * vehicle.parkingTime;
     parkingArea.cash += bill;
     parkingArea.sizeOfParkingArea += parseFloat(vehicle.size);
-    vehicle.ticketPrice = 0;
-    vehicle.ticketNumber = null;
-    vehicle.parkingTime = 0;
+    this.resetVehicleStatus(vehicle);
 
     return `Thank you. You pay : Rp${bill},00`;
   }
